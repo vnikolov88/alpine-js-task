@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>AlpineJS App</title>
+      <script src = "https://unpkg.com/alpinejs@1.9.5/dist/alpine.js"></script>
+      <script src = "https://unpkg.com/director@1.2.8/build/director.min.js"></script>
+      <script src = "js/app.js"></script>
+
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link href="lib/css/tailwind.css" rel="stylesheet">
+   </head>
+   <body class="font-mono">
+      <div class="container mx-auto" 
+            x-data="ticketMVC()"
+            >
+         <section class="px-4 sm:px-6 lg:px-4 xl:px-6 pt-4 pb-4 sm:pb-6 lg:pb-4 xl:pb-6 space-y-4">
+            <header class="flex items-center justify-between">
+               <h1 class="text-lg leading-6 font-medium text-black" > <!-- title text -->Tickets</h1>
+            </header>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4" x-for="ticket in tickets" :key="ticket.id">
+               <li class="" ><!-- begin: ticket  card -->
+                  <div class="group cursor-pointer rounded-lg p-4 border border-gray-200 hover:bg-light-blue-500 hover:border-transparent hover:shadow-lg">
+                     <dl class="grid sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center">
+                        <div>
+                           <dt class="sr-only">Title</dt>
+                           <dd class="leading-6 font-bold text-black group-hover:text-blue" x-text="ticket.title">Ticket Title</dd>
+                        </div>
+                        <div>
+                           <dt class="sr-only">Description</dt>
+                           <dd class="text-sm font-medium group-hover:text-light-blue-200 sm:mb-4 lg:mb-0 xl:mb-4"  x-text="ticket.description">Some Description</dd>
+                        </div>
+                        <br>
+                        <div>
+                           <dt class="sr-only">Assigniee</dt>
+                           <dd class="text-sm font-bold text-black group-hover:text-blue"  x-text="ticket.asisgniee">Asisgniee Name</dd>
+                        </div>
+                        <div>
+                           <dt class="sr-only">Status</dt>
+                           <dd class="text-sm font-medium group-hover:text-light-blue-200 sm:mb-4 lg:mb-0 xl:mb-4" x-text="ticket.status">Status</dd>
+                        </div>
+                        <div>
+                           <button type="button" class="bg-gray-800 rounded-full font-bold text-white px-4 py-3 transition duration-300 ease-in-out hover:bg-black mr-6" id="edit">Edit</button>
+                           <button type="button" class="bg-red-600 rounded-full font-bold text-white px-4 py-3 transition duration-300 ease-in-out hover:bg-red-700 mr-6" id="delete">Delete</button>
+                        </div>
+                     </dl>
+                  </div>
+               </li>
+               <li class="hover:shadow-lg flex rounded-lg smoothScroll">
+                  <a href="#newTodo" 
+                     id="add-link"
+                     class="hover:border-transparent hover:shadow-xs w-full flex items-center justify-center rounded-lg border-2 border-dashed border-gray-200 text-sm font-medium py-4 cursor-pointer">
+                     Add New Ticket
+                  </a>
+               </li>
+               <li class="">
+                  <button type="button" 
+                           class="bg-red-600 rounded-full font-bold text-white px-4 py-3 transition duration-300 ease-in-out hover:bg-red-700 mr-6" 
+                           id="delete-all">Delete All</button>
+               </li>
+            </ul>
+         </section>
+
+
+         <div class="py-12 my-12 separator"></div>
+         
+
+         <div class="container mx-auto" id="newTodo">
+            <div class="flex justify-center px-6 my-12">
+               <!-- Row -->
+               <div class="w-full xl:w-3/4 lg:w-11/12 flex">
+                  <!-- Col -->
+                  <div
+                     class="w-full h-auto bg-gray-400 hidden lg:block lg:w-5/12 bg-cover bg-bottom	 rounded-l-lg"
+                     style="background-image: url('https://source.unsplash.com/Mv9hjnEUHR4/600x800')"
+                     ></div>
+                  <!-- Col -->
+                  <div class="w-full lg:w-7/12 bg-white p-5 rounded-lg lg:rounded-l-none">
+                     <h3 class="pt-4 text-2xl text-center">Create a Ticket</h3>
+                     <div class="px-8 pt-6 pb-8 mb-4 bg-white rounded" id="" :class="{ completed: ticket.completed, editing: ticket.editing }" @click="editing(ticket)">
+                        <div class="mb-4 md:flex md:justify-between">
+                           <div class="mb-4 md:mr-2 md:mb-0" >
+                              <label class="block mb-2 text-sm font-bold text-gray-700" for="Title">
+                              Title
+                              </label>
+                              <input
+                                 class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                                 :id="`edit-${ticket.id}`"
+                                 type="text"
+                                 placeholder=""
+                                 required="required"
+                                 value=""
+                                 x-model="input1"
+                                 /> <!-- x-model="ticket.edit" -->
+                           </div>
+                           <div class="md:ml-2">
+                              <label class="block mb-2 text-sm font-bold text-gray-700" for="Description">
+                              Description
+                              </label>
+                              <input
+                                 class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                                 id="Description"
+                                 type="text"
+                                 placeholder=""
+                                 required="required"
+                                 value=""
+                                 x-model="input2"
+                                 />
+                           </div>
+                        </div>
+                        <div class="relative mt-4">
+                           <label for="name" class="text-base leading-7 text-blueGray-500">Assigned</label>
+                           <select x-model="select1" class="w-full px-4 py-2 mt-2 text-base text-black transition duration-500 ease-in-out transform rounded-lg bg-gray-100 focus:border-blueGray-500 focus:bg-white focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2" 
+                                    id ="Assigned">
+                              <option selected="selected">Alex</option>
+                              <option>Venci</option>
+                              <option>Martin</option>
+                           </select>
+                        </div>
+                        <div class="relative mt-4">
+                           <label for="name" class="text-base leading-7 text-blueGray-500">Status</label>
+                           <select x-model="select2" class="w-full px-4 py-2 mt-2 text-base text-black transition duration-500 ease-in-out transform rounded-lg bg-gray-100 focus:border-blueGray-500 focus:bg-white focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2" 
+                                    id ="Status">
+                              <option selected="selected">Development</option>
+                              <option>Todo</option>
+                              <option>QA</option>
+                              <option>Testing</option>
+                              <option>Done</option>
+                           </select>
+                        </div>
+                        <div class="pt-6 w-full flex space-x-2 justify-between">
+                           <button type="submit" 
+                                    class="search bg-gray-800 rounded-full font-bold text-white px-4 py-3 transition duration-300 ease-in-out hover:bg-black mr-6" 
+                                    id="save"
+                                    :disabled="loading"
+                                    @click="search()"
+   
+                                    @keydown.enter="edit(ticket); save()"
+                                    @keydown.escape="reset(ticket)"
+                                    @click.away="edit(ticket); save()"
+   
+                                    >Save</button>
+                           <button type="submit" 
+                                    class="bg-red-600 rounded-full font-bold text-white px-4 py-3 transition duration-300 ease-in-out hover:bg-red-700 mr-6" 
+                                    id="delete">Delete</button>
+                        </div>
+   <!--
+                        <div class="pt-6 clone-buffer-ticket">
+                           <span>Title:</span>
+                           <span x-text="input1"></span>,
+                           <span>Description:</span>
+                           <span x-text="input2"></span>,
+                           <span>Assigned:</span>
+                           <span x-text="select1"></span>,
+                           <span>Status:</span>
+                           <span x-text="select2"></span>
+                        </div>
+   -->                     
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+<script>
+   function ticketMVC() {
+    const storage = Storage()
+    const { tickets } = storage.get()
+  
+    return {
+      init() {
+        // needed because #/ navigation breaks [autofocus]
+        this.$refs.newticketInput.focus()
+      },
+  
+      save() {
+        this.$nextTick(() => {
+          storage.set({ tickets: this.tickets })
+        })
+      },
+  
+      // data
+  
+      tickets,
+      newticket: '',
+  
+      // filtering
+  
+      listtickets() {
+        switch (this.filter) {
+          case 'active':
+            return this.tickets.filter(isNotCompleted)
+          case 'completed':
+            return this.tickets.filter(isCompleted)
+          default:
+            return this.tickets
+        }
+      },
+  
+      // toggle compeleted check
+  
+      toggleAll({ target: { checked } }) {
+        this.tickets.forEach(ticket => {
+          ticket.completed = checked
+        })
+      },
+  
+      toggle(ticket, { target: { checked } }) {
+        ticket.completed = checked
+      },
+  
+      countIncomplete() {
+        return this.tickets.reduce(
+          (acc, { completed }) => acc + Number(!completed),
+          0,
+        )
+      },
+  
+      // adding new tickets
+  
+      add() {
+        const id = new Date().getTime()
+        this.tickets = [
+          ...this.tickets,
+          { id, title: this.newticket.trim(), completed: false },
+        ]
+        this.newticket = ''
+      },
+  
+      // removing tickets
+  
+      remove(ticket) {
+        const idx = findIdx(ticket, this.tickets)
+        this.tickets = [
+          ...this.tickets.slice(0, idx),
+          ...this.tickets.slice(idx + 1, this.tickets.length),
+        ]
+      },
+  
+      clear() {
+        this.tickets = this.tickets.filter(isNotCompleted)
+      },
+  
+      // editing tickets
+  
+      editing(ticket) {
+        ticket.editing = true
+        ticket.edit = ticket.title
+  
+        this.$nextTick(() => {
+          document.getElementById(`edit-${ticket.id}`).focus()
+        })
+      },
+  
+      edit(ticket) {
+        const newTitle = ticket.edit.trim()
+        if (!newTitle) {
+          this.remove(ticket)
+        } else {
+          ticket.title = newTitle
+          this.reset(ticket)
+        }
+      },
+  
+      reset(ticket) {
+        ticket.editing = false
+        ticket.edit = ''
+      },
+  
+      // counter at the bottom
+  
+      showCounter() {
+        const count = this.countIncomplete()
+        return `<strong>${count}</strong> item${count === 1 ? '' : 's'} left`
+      },
+    }
+  }
+  
+  function Storage() {
+    const KEY = 'tickets-alpinejs'
+    const defaultData = '{ "tickets": [] }'
+  
+    return {
+      get() {
+        return JSON.parse(localStorage.getItem(KEY) || defaultData)
+      },
+      set({ tickets, ...rest }) {
+        localStorage.setItem(
+          KEY,
+          JSON.stringify({
+            ...rest,
+            tickets: tickets.map(({ id, title, completed }) => ({
+              id,
+              title,
+              completed,
+            })),
+          }),
+        )
+      },
+    }
+  }
+  
+  function findIdx(ticket, tickets) {
+    const idx = tickets.findIndex(({ id }) => id === ticket.id)
+    if (idx < 0) throw Error(`Can not find ticket`)
+    return idx
+  }
+  
+  function isCompleted({ completed }) {
+    return completed
+  }
+  
+  function isNotCompleted({ completed }) {
+    return !completed
+  }
+  
+</script>
+      
+   </body>
+</html>
